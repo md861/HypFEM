@@ -21,6 +21,7 @@ double precision JCBT(NDIME,NDIME),&
 integer NMARK,ELTYPE,EFACT(NMARK,ELTYPE)
 double precision n(NDIME)
 integer EDG_TYPE
+integer NBC_pos
 
 !definitions for getRHS
 double precision r_mod,K_W,Omega,T,Cp
@@ -110,8 +111,9 @@ double precision ea,eb,ox,oy,sprd,limx,limy
     
   
   ! !Integrate over edges.
+  !  NBC_pos = 1
   !   !edge 1
-  !   if(EFACT(1,1).EQ. 1)THEN   
+  !   if(EFACT(NBC_pos,1).EQ. 1)THEN   
   !   EDG_TYPE = 1
   !   !write(*,*)'-----------------'
   !   !write(*,*) 'ELEMENT = ',IELEM,' EDGE = 1'
@@ -170,7 +172,7 @@ double precision ea,eb,ox,oy,sprd,limx,limy
         
         
   !   !edge 2
-  !   if(EFACT(1,2).EQ. 1)THEN  
+  !   if(EFACT(NBC_pos,2).EQ. 1)THEN  
   !   EDG_TYPE = 0 
   !   !write(*,*)'-----------------'
   !   !write(*,*) 'ELEMENT = ',IELEM,' EDGE = 2'
@@ -231,7 +233,7 @@ double precision ea,eb,ox,oy,sprd,limx,limy
     
     
   !   !edge 3
-  !   if(EFACT(1,3).EQ. 1)THEN   
+  !   if(EFACT(NBC_pos,3).EQ. 1)THEN   
   !   EDG_TYPE = 1
   !   !write(*,*)'-----------------'
   !   !write(*,*) 'ELEMENT = ',IELEM,' EDGE = 3'
@@ -290,7 +292,7 @@ double precision ea,eb,ox,oy,sprd,limx,limy
   !   endif
     
   !   !edge 4
-  !   if(EFACT(1,4).EQ. 1)THEN   
+  !   if(EFACT(NBC_pos,4).EQ. 1)THEN   
   !   EDG_TYPE = 0
   !   !write(*,*)'-----------------'
   !   !write(*,*) 'ELEMENT = ',IELEM,' EDGE = 4'
