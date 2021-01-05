@@ -3,7 +3,7 @@ A Fortran code to solve an Initial-Boundary-value scalar wave problem in 2D. The
 
 <img src="https://github.com/md861/HypFEM/blob/main/images/mesh_p2.png" width="400" height="450"> <img src="https://github.com/md861/HypFEM/blob/main/images/wave.gif" width="400" height="450">
 ## Features
-* Direct import 2D meshes generated in [Gmsh](https://gmsh.info/) - an open source mesh generator.
+* Directly import 2D meshes generated in [Gmsh](https://gmsh.info/) - an open source mesh generator.
 * Dynamic allocation of all variables and arrays, depending on the imported mesh and order of FEM polynomials.
 * Plot the mesh and numerical solutions in [Paraview](https://www.paraview.org/) - an open source alternative to Tecplot.
 * Apply Neumann, Dirichlet and Robin boundary conditions on edges marked respectively in Gmsh. Automated calculation of edge normals for using Neumann boundaries.
@@ -18,7 +18,7 @@ The version number is based on the following format: *y*:*[m]m*:*n[s]*, for the 
 ### Compiler 
 Make sure that the compiler supports Fortran. For Linux based systems, generally this is provided by the GNU compiler. The latest version of HypFEM was compiled using gcc 9.3.0
 ### LAPACK
-Download the latest version from [netlib.org](http://www.netlib.org/lapack/#_release_history). The latest version of HypFEM was compiled using LAPACK, version 3.9.0. Make sure the path of the library is resolved properly. In Linux, this can be easily checked with via running `ld -lblas -llapack --verbose` in the terminal.
+Download the latest version from [netlib.org](http://www.netlib.org/lapack/#_release_history). The latest version of HypFEM was compiled using LAPACK, version 3.9.0. Make sure the path of the library is resolved properly. In Linux, this can be easily checked via running `ld -lblas -llapack --verbose` in the terminal.
 ### [Gmsh](https://gmsh.info/)
 This open-source meshing tool is required to produce the requisite format of data file, that is fed to the HypFEM for computations. Read the instructions below on how to prepare the mesh and define the computational domain.
 ### [Paraview](https://www.paraview.org/)
@@ -39,15 +39,15 @@ To prepare the mesh, create a 2D geometry in [Gmsh](https://gmsh.info/) and expo
 
 Make sure to mark the boundary curves/nodes for each type of boundary condition. The boundaries can be described in any sequence, however do make note of the sequence of their definition as this would provide the index (for *pellib.f90* file) to implement the corresponding conditions for each boundadry type. 
 
-NB: At the moment, only non-homogenous Neumann and homogenous Dirichlet conditions may be applied. Although, the future versions would contain the provision for non-homogenous mixed boundaries (even with enriched solution basis).
+NB: At the moment, only Neumann conditions may be applied. Although, the future versions would contain the provision for non-homogenous mixed boundaries (even with enriched solution basis).
 
 ## Implementing problem sources
 ### Initial condition
 Modify the *pellib_DIC.f90* file to specify the initial conditions for the wave amplitude (`FZ_Phi`) and its time derivative (`FZ_Vlcty`).
 ### Boundary condition(s)
 * Non-homogeneous Neumann boundary: 
-    * In *pellib.f90* under the "!Integrate over edges" section set the `NBC_pos` index as the same as the corresponding index of the boundary type defined during meshing (see [Mesh preparation](#mesh-preparation) for details). In this sections, update the `GZ` variable that is used to implement the relevant condition for the given boundary type (chosen using `NBC_pos` index). NB: `n(1)` and `n(2)` store the x and y components of the normal vector to a given edge. 
-    * For each different boundary condition (of non-homogeneous Neumann type), copy and paste the entire "!Integrate over edges" section (i.e. all the 4 subsections integrating over the four sides of a quadrilaterl) and set the `NBC_pos` index appropriately. 
+    * In *pellib.f90* under the "!Integrate over edges" section set the `NBC_pos` index as the same as the corresponding index of the boundary type defined during meshing (see [Mesh preparation](#mesh-preparation) for details). In this section, update the `GZ` variable that is used to implement the relevant condition for the given boundary type (chosen using `NBC_pos` index). Notice that `n(1)` and `n(2)` store the x and y components of the normal vector to a given edge. This normal vector is computed for each edge automatically during run-time. 
+    * For each different boundary condition (of non-homogeneous Neumann type), copy and paste the entire "!Integrate over edges" section (i.e. all the 4 subsections integrating over the four sides of a quadrilateral) and set the `NBC_pos` index appropriately. 
 * Homogeneous Neumann boundary:
     * Since these boundaries do not require integration, simply do not include any "!Integrate over edges" section for this `NBC_pos` index in the *pellib.f90* file.
 ### Source term(s)
@@ -86,7 +86,7 @@ All the files should be in the same folder. Open a terminal in the code folder, 
 The terminal then outputs the time step currently being processed, with the error in numerical solution if the analytical solution is available. 
  
 ## Example files:
-An example *dat* file that has a 2D mesh with 2-nd order quadrilateral elements (generated with [Gmsh](https://gmsh.info/)) is located in the [Example/10pi_p2](https://github.com/md861/HypFEM/tree/main/Example/10pi_p2) folder. The Paraview plots of the mesh and an example numerical solution for a progressive plane wave with Neuman boundaries and a non-zero (sinusoidal) source solved over this mesh, are shown as animated gifs at the beginning of this read-me file. 
+An example *dat* file that has a 2D mesh with 2-nd order quadrilateral elements (generated with [Gmsh](https://gmsh.info/)) is located in the [Example/10pi_p2](https://github.com/md861/HypFEM/tree/main/Example/10pi_p2) folder. The Paraview plots of the mesh and an example numerical solution for a progressive plane wave with homogeneous Neuman boundaries and a non-zero (sinusoidal) source solved over this mesh, are shown as animated gifs at the beginning of this read-me file. 
  
 ## References
 <a id="1">[1]</a> 
