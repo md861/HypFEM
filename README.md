@@ -41,21 +41,31 @@ Make sure to mark the boundary curves/nodes for each type of boundary condition.
 
 NB: At the moment, only non-homogenous Neumann and homogenous Dirichlet conditions may be applied. Although, the future versions would contain the provision for non-homogenous mixed boundaries (even with enriched solution basis).
 
-## Implementing problem conditions
+## Implementing problem sources
 ### Initial condition
 Modify the *pellib_DIC.f90* file to specify the initial conditions for the wave amplitude (`FZ_Phi`) and its time derivative (`FZ_Vlcty`).
 ### Boundary condition(s)
-* Non-homogeneous Neumann boundary: In *pellib.f90* under the "!Integrate over edges" section set the `NBC_pos` index as the same as the corresponding index of the boundary type defined during meshing (see [Mesh preparation](#mesh-preparation) for details).  
+* Non-homogeneous Neumann boundary: 
+    * In *pellib.f90* under the "!Integrate over edges" section set the `NBC_pos` index as the same as the corresponding index of the boundary type defined during meshing (see [Mesh preparation](#mesh-preparation) for details). In this sections, update the `GZ` variable that is used to implement the relevant condition for the given boundary type (chosen using `NBC_pos` index). NB: `n(1)` and `n(2)` store the x and y components of the normal vector to a given edge. 
+    * For each different boundary condition (of non-homogeneous Neumann type), copy and paste the entire "!Integrate over edges" section (i.e. all the 4 subsections integrating over the four sides of a quadrilaterl) and set the `NBC_pos` index appropriately. 
+* Homogeneous Neumann boundary:
+    * Since these boundaries do not require integration, simply do not include any "!Integrate over edges" section for this `NBC_pos` index in the *pellib.f90* file.
+### Source term(s)
+In the *pellib.f90* file, under the "!Integrate inside domain" section, update the `FZ` variable that evaluates the source terms for the given problem. If there are no source terms present, then this section can simply be commented out. 
 
+## Implementing numerical parameters
+Numerical parameters, e.g. the quadrature points for integration, total number of time iterations, etc could be set in the *femSolver.f90* file. Some (most used) parameters are detailed below:
+* `NGAUSS` - this variable defines the number of quadrature points to be used for line integrals, and the square of this for integrations inside the element.
+* `NPOINTPLOT` - similar to `NGAUSS`, defines the number of quadrature points for plotting the numerical results. 
+* `n_record_IStep` - sets the intervals at which the numerical results are plotted. To disable numerical plots, simply comment the section in the time loop.
+* `dt` - step size in time.
+* `n_istep` - number of time iterations to be run. Thus, total time = `dt*n_istep`.
+* `RKM_Order` - determines the order of Runge-Kutta method for time integration. Make sure to initialize the corresponding Butcher tableau (`a_RKM`,`b_RKM`,`c_RKM`) in the "!Initialize" section (in the same file *femSolver.f90*).
+* `Cp` - phase velocity of the wave.
+* `NANGL` - number of enrichment functions per node. Set `NANGL = 1` for purely p-FEM solutions.
+* `K_W` - wavenumber of the enrichment functions. NB: these are not used if `NANGL = 1`.
 
-## Usage:
-All the files should be in the same folder. Open a terminal in the code folder, and type the following for:
-* Compilation: `./CleanNCompile`
-* Run: `./femSolver`
-
- The terminal then outputs the time step currently being processed, with the error in numerical solution if the analytical solution is available. 
- 
- ## Description of files:
+ ## Description of some files:
  * *dat* - This is the "su2" format mesh file supplied by the user, generated from Gmsh. The file should be named as "dat" to be read by the solver.
  * *femSolver.f90* - The main code that coordinates the subroutines and functions. This is where you could change some numerical parameters e.g. 
     * the wavenumber and angular frequency of the problem, 
@@ -63,12 +73,19 @@ All the files should be in the same folder. Open a terminal in the code folder, 
     * step size in time for finite differences, 
     * total number of timesteps, 
     * number of plots to be stored, etc.
- * *pellib.f90* - This file allows to specify the boundary sources as well as any sources inside the domain.
+ * *pellib.f90* - This file allows to specify the boundary sources as well as any sources (`FZ`) inside the domain.
  * *pellib_DIC.f90* - Modify this file to specify initial conditions.
  * *ln_norm.f90* and *proslib.f90* - These two files are used to specify the analytical solution (if available) for the computation of normed errors and plotting of analytical values over mesh, respectively.
  
- ## Example files:
- An example *dat* file that has a 2D mesh with 4-th order elements is located in the "Example" folder. The Paraview plots of the mesh and an example numerical solution for a progressive plane wave with Neuman boundaries solved over this mesh, are also available. 
+## Usage:
+All the files should be in the same folder. Open a terminal in the code folder, and type the following for:
+* Compilation: `./CleanNCompile`
+* Run: `./femSolver`
+
+The terminal then outputs the time step currently being processed, with the error in numerical solution if the analytical solution is available. 
+ 
+## Example files:
+An example *dat* file that has a 2D mesh with 2-nd order quadrilateral elements (generated with [Gmsh](https://gmsh.info/)) is located in the [Example/10pi_p2](https://github.com/md861/HypFEM/tree/main/Example/10pi_p2) folder. The Paraview plots of the mesh and an example numerical solution for a progressive plane wave with Neuman boundaries and a non-zero (sinusoidal) source solved over this mesh, are shown as animated gifs at the beginning of this read-me file. 
  
 ## References
 <a id="1">[1]</a> 
