@@ -1,5 +1,6 @@
 # HypFEM
 A Fortran code to solve an Initial-Boundary-value scalar wave problem in 2D. The solver uses semidiscrete formulation with lagrange polynomials based Finite Element Method (FEM) for space and diagonally implicit Runge-Kutta family of methods for time discretizations, respectively. The solver also provides an option to enrich the solution space for better convergence rates [[1]](#1). The code is written for the Linux API, however, the system calls could be modified to be run over other operating systems as well. 
+
 <img src="https://github.com/md861/HypFEM/blob/main/images/mesh_p2.png" width="400" height="450"> <img src="https://github.com/md861/HypFEM/blob/main/images/wave.gif" width="400" height="450">
 ## Features
 * Direct import 2D meshes generated in [Gmsh](https://gmsh.info/) - an open source mesh generator.
