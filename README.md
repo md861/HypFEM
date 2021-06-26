@@ -89,7 +89,10 @@ The terminal then outputs the time step currently being processed, with the erro
  
 ## Example files:
 An example *dat* file that has a 2D mesh with 2-nd order quadrilateral elements (generated with [Gmsh](https://gmsh.info/)) is located in the [Example/10pi_p2](https://github.com/md861/HypFEM/tree/main/Example/10pi_p2) folder. The Paraview plots of the mesh and an example numerical solution for a progressive plane wave with homogeneous Neuman boundaries and a non-zero (sinusoidal) source solved over this mesh, are shown as animated gifs at the beginning of this read-me file. 
- 
+
+## Citing this package
+[![DOI](https://zenodo.org/badge/327013671.svg)](https://zenodo.org/badge/latestdoi/327013671)
+
 ## References
 <a id="1">[1]</a> 
 M. Drolia, *et al*. Enriched finite elements for initial-value problem of transverse electromagnetic waves in time domain. *Computers & Structures*, 182, 354-367, 2017.
